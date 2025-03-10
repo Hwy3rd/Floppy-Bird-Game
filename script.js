@@ -29,10 +29,11 @@ class Player {
     this.width = 45;
     this.height = 45;
     this.status = "ALIVE";
+    this.image = new Image();
+    this.image.src = "./assets/player image.png";
   }
   draw() {
-    ctx.fillStyle = "#99c9ff";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
   }
 
   update() {
@@ -69,11 +70,14 @@ class Platform {
     this.height = proportionalSize(height);
     this.width = 100;
     this.gap = 250;
+    this.bottomImage = new Image();
+    this.bottomImage.src = "./assets/bottom pipe.png";
+    this.topImage = new Image();
+    this.topImage.src = "./assets/top pipe.png";
   }
   draw() {
-    ctx.fillStyle = "#acd157";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
-    ctx.fillRect(this.position.x, this.position.y + this.height + this.gap, this.width, innerHeight - this.gap - this.height);
+    ctx.drawImage(this.topImage, this.position.x, this.position.y, this.width, this.height);
+    ctx.drawImage(this.bottomImage, this.position.x, this.position.y + this.height + this.gap, this.width, innerHeight - this.gap - this.height);
   }
 }
 
