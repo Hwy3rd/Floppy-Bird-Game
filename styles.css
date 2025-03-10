@@ -60,20 +60,6 @@
     justify-content: center;
   }
   
-  .checkpoint-screen {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    text-align: center;
-    background-color: var(--section-bg-color);
-    border-radius: 20px;
-    padding: 10px;
-    display: none;
-  }
-  
   #canvas {
     display: none;
   }
@@ -98,4 +84,28 @@
     font-size: 45px;
     display: none;
   } 
+  
+  .end-game-screen {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: white;
+    border-radius: 10px;
+    color: red;
+    width: 300px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .end-game-screen h1 {
+    font-size: 40px;
+    font-weight: bold;
+  }
+
+  #display-result {
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+  }
   

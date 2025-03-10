@@ -1,18 +1,26 @@
 const startBtn = document.getElementById("start-btn");
 const canvas = document.getElementById("canvas");
 const startScreen = document.querySelector(".start-screen");
+const endGameScreen = document.querySelector(".end-game-screen");
 const pointsDisplay = document.getElementById("points");
+const playAgainBtn = document.getElementById("play-again-btn");
+const result = document.getElementById("result");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 const gravity = 0.08;
 let points = 0;
+let animationId;
+
+const proportionalSize = (size) => {
+  return innerHeight < 700 ? Math.ceil((size / 700) * innerHeight) : size;
+}
 
 class Player {
   constructor() {
     this.position = {
       x: 250,
-      y: 280,
+      y: proportionalSize(280),
     };
     this.velocity = {
       x: 0,
@@ -58,7 +66,7 @@ class Platform {
       x,
       y: 0,
     };
-    this.height = height;
+    this.height = proportionalSize(height);
     this.width = 100;
     this.gap = 250;
   }
@@ -69,9 +77,9 @@ class Platform {
   }
 }
 
-const player = new Player();
+let player = new Player();
 
-const platforms = [];
+let platforms = [];
 
 const createNewPlatform = () => {
     const x = canvas.width;
@@ -82,10 +90,8 @@ const createNewPlatform = () => {
     platforms.push(platform);
 }
 
-createNewPlatform();
-
 const animate = () => {
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     platforms.forEach((platform) => {
@@ -104,18 +110,47 @@ const animate = () => {
             platform.position.x + platform.width + 4 > player.position.x) {
             points++;
             pointsDisplay.textContent = points;
-            console.log("counted!");
         }
         if(platform.position.x + platform.width < -100) {
             platforms.splice(index, 1);
         }
     })
-    
+
+    checkPlatformCollusion();
+
     if(player.status === "DEAD") {
-        return;
+      endGame();
     }
 };
 
+const checkPlatformCollusion = () => {
+  platforms.forEach((platform) => {
+    const platformTop = platform.position.y + platform.height;
+    const platformBottom = platform.position.y + platform.height + platform.gap;
+    if (
+      player.position.x + player.width > platform.position.x &&
+      player.position.x < platform.position.x + platform.width
+    ) {
+      if (
+        player.position.y < platformTop &&
+        player.position.y + player.height > platformTop
+      ) {
+        player.status = "DEAD";
+      }
+
+      if (
+        player.position.y + player.height > platformBottom &&
+        player.position.y < platformBottom
+      ) {
+        player.status = "DEAD";
+      }
+    }
+
+    if (player.position.y + player.height >= canvas.height) {
+      player.status = "DEAD";
+    }
+  });
+};
 
 const movePlayer = (key, xVelocity) => {
   switch (key) {
@@ -127,15 +162,29 @@ const movePlayer = (key, xVelocity) => {
   }
 };
 
+const endGame = () => {
+  cancelAnimationFrame(animationId)
+  pointsDisplay.style.display = "none";
+  endGameScreen.style.display = "block";
+  result.textContent = points;
+}
+
 const startGame = () => {
   console.log(canvas.width + " x " + canvas.height)
   canvas.style.display = "block";
   startScreen.style.display = "none";
-  points = 0;
   pointsDisplay.style.display = "block";
+  endGameScreen.style.display = "none";
+
+  points = 0;
+  pointsDisplay.textContent = points;
+  player = new Player();
+  platforms = [];
+  createNewPlatform();
   animate();
 };
 
+playAgainBtn.addEventListener("click", startGame);
 startBtn.addEventListener("click", startGame);
 
 window.addEventListener("keydown", ({ key }) => {
