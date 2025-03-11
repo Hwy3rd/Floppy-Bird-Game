@@ -14,7 +14,7 @@ let animationId;
 
 const proportionalSize = (size) => {
   return innerHeight < 700 ? Math.ceil((size / 700) * innerHeight) : size;
-}
+};
 
 class Player {
   constructor() {
@@ -33,7 +33,13 @@ class Player {
     this.image.src = "./assets/player image.png";
   }
   draw() {
-    ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
+    ctx.drawImage(
+      this.image,
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
   }
 
   update() {
@@ -76,8 +82,20 @@ class Platform {
     this.topImage.src = "./assets/top pipe.png";
   }
   draw() {
-    ctx.drawImage(this.topImage, this.position.x, this.position.y, this.width, this.height);
-    ctx.drawImage(this.bottomImage, this.position.x, this.position.y + this.height + this.gap, this.width, innerHeight - this.gap - this.height);
+    ctx.drawImage(
+      this.topImage,
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
+    ctx.drawImage(
+      this.bottomImage,
+      this.position.x,
+      this.position.y + this.height + this.gap,
+      this.width,
+      innerHeight - this.gap - this.height
+    );
   }
 }
 
@@ -86,45 +104,47 @@ let player = new Player();
 let platforms = [];
 
 const createNewPlatform = () => {
-    const x = canvas.width;
-    const min = 50;
-    const max = 350;
-    const h = Math.floor(Math.random()*max) + min;
-    const platform = new Platform(x, h);
-    platforms.push(platform);
-}
+  const x = canvas.width;
+  const min = 50;
+  const max = 350;
+  const h = Math.floor(Math.random() * max) + min;
+  const platform = new Platform(x, h);
+  platforms.push(platform);
+};
 
 const animate = () => {
-    animationId = requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  animationId = requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    platforms.forEach((platform) => {
-        platform.draw();
-    });
+  platforms.forEach((platform) => {
+    platform.draw();
+  });
 
-    player.update();
+  player.update();
 
-    platforms.forEach((platform, index) => {
-        platform.position.x -= 4;
+  platforms.forEach((platform, index) => {
+    platform.position.x -= 4;
 
-        if(platform.position.x === canvas.width - 500) {
-            createNewPlatform();
-        }
-        if(platform.position.x + platform.width <= player.position.x && 
-            platform.position.x + platform.width + 4 > player.position.x) {
-            points++;
-            pointsDisplay.textContent = points;
-        }
-        if(platform.position.x + platform.width < -100) {
-            platforms.splice(index, 1);
-        }
-    })
-
-    checkPlatformCollusion();
-
-    if(player.status === "DEAD") {
-      endGame();
+    if (platform.position.x === canvas.width - 500) {
+      createNewPlatform();
     }
+    if (
+      platform.position.x + platform.width <= player.position.x &&
+      platform.position.x + platform.width + 4 > player.position.x
+    ) {
+      points++;
+      pointsDisplay.textContent = points;
+    }
+    if (platform.position.x + platform.width < -100) {
+      platforms.splice(index, 1);
+    }
+  });
+
+  checkPlatformCollusion();
+
+  if (player.status === "DEAD") {
+    endGame();
+  }
 };
 
 const checkPlatformCollusion = () => {
@@ -135,17 +155,11 @@ const checkPlatformCollusion = () => {
       player.position.x + player.width > platform.position.x &&
       player.position.x < platform.position.x + platform.width
     ) {
-      if (
-        player.position.y < platformTop &&
-        player.position.y + player.height > platformTop
-      ) {
+      if (player.position.y < platformTop) {
         player.status = "DEAD";
       }
 
-      if (
-        player.position.y + player.height > platformBottom &&
-        player.position.y < platformBottom
-      ) {
+      if (player.position.y + player.height > platformBottom) {
         player.status = "DEAD";
       }
     }
@@ -167,14 +181,14 @@ const movePlayer = (key, xVelocity) => {
 };
 
 const endGame = () => {
-  cancelAnimationFrame(animationId)
+  cancelAnimationFrame(animationId);
   pointsDisplay.style.display = "none";
   endGameScreen.style.display = "block";
   result.textContent = points;
-}
+};
 
 const startGame = () => {
-  console.log(canvas.width + " x " + canvas.height)
+  console.log(canvas.width + " x " + canvas.height);
   canvas.style.display = "block";
   startScreen.style.display = "none";
   pointsDisplay.style.display = "block";
